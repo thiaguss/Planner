@@ -1,6 +1,8 @@
 package com.nlw.planner.trip;
 
 
+import com.nlw.planner.participant.ParticipantCreateResponse;
+import com.nlw.planner.participant.ParticipantRequestPayload;
 import com.nlw.planner.participant.ParticipantService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -68,6 +70,23 @@ public class TripsController {
             repository.save(newTrip);
             participantService.triggerConfirmationEmailToParticipants(id);
             return ResponseEntity.ok(newTrip);
+        }
+
+        return ResponseEntity.notFound().build();
+    }
+
+    @PostMapping("/{id}/invite")
+    public ResponseEntity<ParticipantCreateResponse> inviteParticipants(@PathVariable UUID id, @RequestBody ParticipantRequestPayload payload){
+        Optional<Trips> trip = repository.findById(id);
+
+        if (trip.isPresent()){
+            Trips newTrip = trip.get();
+
+            ParticipantCreateResponse participantResponse = participantService.registerParticipantToTrip(payload.email(), newTrip);
+
+            if (newTrip.getIsConfirmed()) participantService.triggerConfirmationEmailToParticipant(payload.email());
+
+            return ResponseEntity.ok(participantResponse );
         }
 
         return ResponseEntity.notFound().build();
