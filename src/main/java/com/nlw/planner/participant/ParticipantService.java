@@ -1,5 +1,6 @@
 package com.nlw.planner.participant;
 
+import com.nlw.planner.trip.Trips;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -8,7 +9,17 @@ import java.util.UUID;
 @Service
 public class ParticipantService {
 
-    public void registerParticipantsToTrip(List<String> participantsToIvite, UUID tripId){}
+    private final ParticipantRepository repository;
+
+    public ParticipantService(ParticipantRepository repository) {
+        this.repository = repository;
+    }
+
+    public void registerParticipantsToTrip(List<String> participantsToIvite, Trips trip){
+        List<Participants> participants = participantsToIvite.stream().map(email -> new Participants(email, trip)).toList();
+
+        repository.saveAll(participants);
+    }
 
     public void triggerConfirmationEmailToParticipants(UUID tripId){}
 }
