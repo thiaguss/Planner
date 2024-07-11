@@ -21,5 +21,14 @@ public class ParticipantService {
         repository.saveAll(participants);
     }
 
+    public ParticipantCreateResponse registerParticipantToTrip(String email, Trips trip){
+        Participants newParticipant = new Participants();
+        repository.save(newParticipant);
+
+        return new ParticipantCreateResponse(newParticipant.getId());
+    }
+
     public void triggerConfirmationEmailToParticipants(UUID tripId){}
+
+    public void triggerConfirmationEmailToParticipant(String email) {}
 }
