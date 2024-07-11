@@ -1,14 +1,13 @@
 package com.nlw.planner.trip;
 
 
-import com.nlw.planner.participant.ParticipantCreateResponse;
-import com.nlw.planner.participant.ParticipantRequestPayload;
-import com.nlw.planner.participant.ParticipantService;
+import com.nlw.planner.participant.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -90,5 +89,12 @@ public class TripsController {
         }
 
         return ResponseEntity.notFound().build();
+    }
+
+    @GetMapping("/{id}/participants")
+    public ResponseEntity<List<ParticipantDto>> getAllParticipants(@PathVariable UUID id){
+        List<ParticipantDto> participantsList = participantService.getAllParticipantsFromTrip(id);
+
+        return ResponseEntity.ok(participantsList);
     }
 }
